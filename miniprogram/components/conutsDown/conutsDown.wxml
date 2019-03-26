@@ -1,0 +1,2 @@
+<!--components/conuts down.wxml-->
+<text class='marright'>{{hours}}:{{minute}}:{{second}}</text>

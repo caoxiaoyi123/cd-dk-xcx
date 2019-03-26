@@ -1,120 +1,125 @@
-//index.js
-const app = getApp()
-
+// pages/index/index.js
 Page({
-  data: {
-    avatarUrl: './user-unlogin.png',
-    userInfo: {},
-    logged: false,
-    takeSession: false,
-    requestResult: ''
-  },
 
-  onLoad: function() {
-    if (!wx.cloud) {
-      wx.redirectTo({
-        url: '../chooseLib/chooseLib',
-      })
-      return
-    }
+    /**
+     * 页面的初始数据
+     */
+    data: {
+        src:'',
+        shareData:''
+    },
 
-    // 获取用户信息
-    wx.getSetting({
-      success: res => {
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          wx.getUserInfo({
-            success: res => {
-              this.setData({
-                avatarUrl: res.userInfo.avatarUrl,
-                userInfo: res.userInfo
-              })
-            }
+    /**
+     * 生命周期函数--监听页面加载
+     */
+
+    onLoad: function (options) {
+        console.log(options)
+        let appid = 'wx393124fdad606b1d'
+        if(JSON.stringify(options)=='{}'){//正常方式进入
+          this.setData({
+            src: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri=https%3a%2f%2fpre-imis.biaodaa.com%2findex.html&response_type=code&scope=snsapi_base&state=CD-IMIS#wechat_redirect'
+          })
+        }else{//录音完进入
+          let url = decodeURIComponent(options.uri) + '?type=' + options.type + '&id=' + options.id + '&path=' + options.audioPath
+          this.setData({
+            src: url
           })
         }
-      }
-    })
-  },
-
-  onGetUserInfo: function(e) {
-    if (!this.logged && e.detail.userInfo) {
-      this.setData({
-        logged: true,
-        avatarUrl: e.detail.userInfo.avatarUrl,
-        userInfo: e.detail.userInfo
-      })
-    }
-  },
-
-  onGetOpenid: function() {
-    // 调用云函数
-    wx.cloud.callFunction({
-      name: 'login',
-      data: {},
-      success: res => {
-        console.log('[云函数] [login] user openid: ', res.result.openid)
-        app.globalData.openid = res.result.openid
-        wx.navigateTo({
-          url: '../userConsole/userConsole',
-        })
-      },
-      fail: err => {
-        console.error('[云函数] [login] 调用失败', err)
-        wx.navigateTo({
-          url: '../deployFunctions/deployFunctions',
-        })
-      }
-    })
-  },
-
-  // 上传图片
-  doUpload: function () {
-    // 选择图片
-    wx.chooseImage({
-      count: 1,
-      sizeType: ['compressed'],
-      sourceType: ['album', 'camera'],
-      success: function (res) {
-
-        wx.showLoading({
-          title: '上传中',
-        })
-
-        const filePath = res.tempFilePaths[0]
         
-        // 上传图片
-        const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]
-        wx.cloud.uploadFile({
-          cloudPath,
-          filePath,
-          success: res => {
-            console.log('[上传文件] 成功：', res)
+    },
 
-            app.globalData.fileID = res.fileID
-            app.globalData.cloudPath = cloudPath
-            app.globalData.imagePath = filePath
-            
-            wx.navigateTo({
-              url: '../storageConsole/storageConsole'
-            })
-          },
-          fail: e => {
-            console.error('[上传文件] 失败：', e)
-            wx.showToast({
-              icon: 'none',
-              title: '上传失败',
-            })
-          },
-          complete: () => {
-            wx.hideLoading()
-          }
+    /**
+     * 生命周期函数--监听页面初次渲染完成
+     */
+    onReady: function () {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面显示
+     */
+    onShow: function () {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面隐藏
+     */
+    onHide: function () {
+
+    },
+
+    /**
+     * 生命周期函数--监听页面卸载
+     */
+    onUnload: function () {
+
+    },
+
+    /**
+     * 页面相关事件处理函数--监听用户下拉动作
+     */
+    onPullDownRefresh: function () {
+
+    },
+
+    /**
+     * 页面上拉触底事件的处理函数
+     */
+    onReachBottom: function () {
+
+    },
+    getParam(url,name){
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        if (url != null && url.toString().length > 1) {
+            var r = url.substr(1).match(reg);
+            if (r != null) return unescape(r[2]); return null;
+        }
+    },
+    msg(e){//分享时，从网页传来的data
+        let num = e.detail.data.length-1;
+        console.log(e);
+        this.setData({
+            shareData: e.detail.data[num]
         })
-
-      },
-      fail: e => {
-        console.error(e)
-      }
-    })
-  },
-
+    },
+    /**
+     * 用户点击右上角分享
+     */
+    onShareAppMessage: function (option) {
+        console.log(option)
+        
+        let index = option.webViewUrl.indexOf('?');
+        let index2 = option.webViewUrl.indexOf('#');
+        let url1=option.webViewUrl.substring(0,index);
+        let url2 = option.webViewUrl.substring(index2, option.webViewUrl.length);
+        if (url2.indexOf('groupQrcode') > -1) {//邀请入群
+            url2 = url2.replace(/groupQrcode/, 'applyEntry');
+            url2=url2+'&istrue=1';
+        }
+        if (url2.indexOf('cardDetail') > -1) {//邀请入群
+          url2 = url2 + '&isShare=1';
+        }
+        let urlEnd=url1+url2;
+        urlEnd=encodeURIComponent(urlEnd);
+        let path = '/pages/cardDetail/cardDetail?uri=' + urlEnd;
+        let shartData = this.data.shareData;
+        let data = {
+            title:'定课成就美好人生',
+            path: path,
+            success(res) {
+                console.log(res)
+            }
+        }
+        if (shartData!=''){
+            if (url2.indexOf('groupQrcode') > -1) {//邀请入群
+                data.title = shartData.title;
+            } else if (url2.indexOf('cardDetail') > -1){//打卡详情
+                data.title = shartData.title + ',' + shartData.desc;
+            }
+            data.imageUrl = shartData.imgUrl
+        }
+        return data
+    }
 })

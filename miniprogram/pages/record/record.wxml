@@ -1,0 +1,67 @@
+<!--pages/record/record.wxml-->
+<view class='record' wx:if="{{page}}">
+  <!-- 上 -->
+  <view class='top-box'>
+    <image src='/image/pic-tushu.png' mode="widthFix"></image>
+    <text>随时随地，分享你的精彩！</text>
+  </view>
+  <!-- 下 -->
+  <view class='bom-box'>
+    <image src='{{imgsrc}}' mode="widthFix" bindtap='clickTap'></image>
+    <text class='timer'>{{date.minute}}:{{date.second}}</text>
+    <text class='tipTxt'>{{recordTipTxt}}</text>
+    <view class='btn-box'>
+      <p class="btnBox" bindtap="jumpHear">
+        <image src='/image/st.png' mode="widthFix"></image>
+        <text>试听</text>
+      </p>
+      <p class="btnBox" bindtap="remake">
+        <image src='/image/cl.png' mode="widthFix"></image>
+        <text>重录</text>
+      </p>
+      <p class="btnBox" bindtap="upload">
+        <image src='/image/sc.png' mode="widthFix"></image>
+        <text>上传</text>
+      </p>
+    </view>
+  </view>
+</view>
+<!--pages/hear/hear.wxml-->
+<view class='hear' wx:else="{{page}}">
+  <!-- 计时器 -->
+  <view class='timeBox'>
+    <text>{{hearNowTime.minute}}:{{hearNowTime.second}}</text>
+    -
+    <text>{{date.minute}}:{{date.second}}</text>
+  </view>
+  <!-- 进度 -->
+  <view class='slierBox'>
+    <view class='slier-box'>
+      <!-- 线 -->
+      <image src='/image/border-top.png' mode="widthFix" class='top'></image>
+      <image src='/image/border-bottom.png' mode="widthFix" class='bottom'></image>
+      <view class='con-box'>
+        <!-- 红色区域 -->
+        <view class='content'style="width:{{hearSlierWidth}}">
+          <!-- 圆点 -->
+          <view class='radiu-box'></view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!-- 按钮 -->
+  <view class='btn-box'>
+    <p class="btnBox" bindtap="remake">
+      <image src='/image/cl.png' mode="widthFix"></image>
+      <text>重录</text>
+    </p>
+    <p class="btnBox play" bindtap="playTap">
+      <image src='{{imgsrc}}' mode="widthFix"></image>
+      <text>{{hearTxt}}</text>
+    </p>
+    <p class="btnBox" bindtap="upload">
+      <image src='/image/sc.png' mode="widthFix"></image>
+      <text>上传</text>
+    </p>
+  </view>
+</view>

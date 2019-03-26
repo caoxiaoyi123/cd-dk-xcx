@@ -1,0 +1,131 @@
+/* pages/record/record.wxss */
+.record{
+  width: 100%;
+  height: 100vh;
+}
+.top-box{
+  background: #f5f5f5;
+  width: 100%;
+  height: 700rpx;
+  position: relative;
+}
+.top-box image{
+  position: absolute;
+  transform: translate(-50%,-50%);
+  top: 50%;
+  left: 50%;
+  width: 384rpx;
+}
+.top-box text{
+  color: #bbb;
+  font-size: 24rpx;
+  position: absolute;
+  transform: translateX(-50%);
+  left: 50%;
+  bottom: 128rpx
+}
+
+.bom-box{
+  padding-top: 23rpx;
+  text-align: center
+}
+.bom-box image{
+  width: 160rpx;
+}
+.bom-box .timer{
+  color: #EA2923;
+  display: block;
+  font-size: 24rpx;
+}
+.bom-box .tipTxt{
+  font-size: 28rpx;
+  color: #999;
+  display: block;
+  height: 40rpx;
+}
+.btn-box{
+  padding: 45rpx 124rpx 0;
+  display: flex;
+  justify-content: space-between
+}
+.btn-box .btnBox{
+  width: 85rpx;
+  color: #333;
+  font-size: 24rpx;
+  text-align: center
+}
+.btnBox image{
+  width: 100%
+}
+
+
+
+
+/* pages/hear/hear.wxss */
+/* 计时器 */
+.timeBox{
+  padding-top: 56rpx;
+  text-align: center;
+  color: #999999;
+  font-size: 72rpx
+}
+/* 进度 */
+.slierBox{
+  width: 100%;
+  padding: 116rpx 0 290rpx;
+  box-sizing: border-box;
+}
+.slier-box{
+  height: 400rpx;
+  width: 100%;
+  position: relative;
+}
+.slier-box image{
+  position: absolute;
+  width: 100%
+}
+.slier-box .top{
+  top: -23rpx
+}
+.slier-box .bottom{
+  bottom: -23rpx
+}
+.con-box{
+  padding:5rpx 12rpx;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%
+}
+.content{
+  background: rgba(230,33,41,.1);
+  border-right: 1px solid #E62129;
+  height: 100%;
+  position: relative;
+  /* transition: all 1s */
+}
+.radiu-box{
+  position: absolute;
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+  top: -18rpx;
+  background: #E62129;
+  right: -9rpx
+}
+/* 按钮 */
+.hear .btn-box{
+  align-items: center;
+  padding: 0 124rpx;
+}
+/* .btn-box .btnBox{
+  width: 85rpx;
+  color: #333;
+  font-size: 24rpx;
+  text-align: center
+} */
+.btn-box .play{
+  width: 158rpx;
+}
+/* .btn-box image{
+  width: 100%
+} */

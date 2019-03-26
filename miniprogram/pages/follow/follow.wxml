@@ -1,0 +1,19 @@
+<!--pages/follow/follow.wxml-->
+<view class='follow'>
+    <!-- <view  wx:if="{{isFollow}}"> -->
+        <official-account></official-account>
+    <!-- </view> -->
+    
+    <view class='top-box'>
+        <view class='div'>
+            <image src="{{imgurl}}"></image>
+        </view>
+        <view class='div'>
+            <text>{{name}}</text>
+        </view>
+        <text class='num'>共{{num}}人</text>
+    </view>
+    <view class="bom-box">
+        <button bindtap='applyGroup' class="{{applyTxt!='申请'?'noclick':''}}">{{applyTxt}}</button>
+    </view>
+</view>
