@@ -6,8 +6,17 @@ Page({
      */
     data: {
         src:'',
-        shareData:''
+        shareData:'',
+        img:[
+          'http://prefile.biaodaa.com/images/1554187714958_4.png',
+          'http://prefile.biaodaa.com/images/1554187714959_10.png',
+          'http://prefile.biaodaa.com/images/1554187714961_11.png',
+          'http://prefile.biaodaa.com/images/1554187714967_13.png',
+          'http://prefile.biaodaa.com/images/1554187714968_14.png',
+          'http://prefile.biaodaa.com/images/1554187714963_11.png'
+        ]
     },
+
 
     /**
      * 生命周期函数--监听页面加载
@@ -15,10 +24,10 @@ Page({
 
     onLoad: function (options) {
         console.log(options)
-        let appid = 'wx393124fdad606b1d'
+      let appid = 'wx26999a53385489f9'
         if(JSON.stringify(options)=='{}'){//正常方式进入
           this.setData({
-            src: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri=https%3a%2f%2fpre-imis.biaodaa.com%2findex.html&response_type=code&scope=snsapi_base&state=CD-IMIS#wechat_redirect'
+            src: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri=https%3a%2f%2fimis.biaodaa.com%2findex.html&response_type=code&scope=snsapi_base&state=CD-IMIS#wechat_redirect'
           })
         }else{//录音完进入
           let url = decodeURIComponent(options.uri) + '?type=' + options.type + '&id=' + options.id + '&path=' + options.audioPath
@@ -89,7 +98,8 @@ Page({
      */
     onShareAppMessage: function (option) {
         console.log(option)
-        
+        let num = Math.round(Math.random()*6);//随机数组下标
+        let imgsrc=this.data.img[num];
         let index = option.webViewUrl.indexOf('?');
         let index2 = option.webViewUrl.indexOf('#');
         let url1=option.webViewUrl.substring(0,index);
@@ -113,12 +123,12 @@ Page({
             }
         }
         if (shartData!=''){
-            if (url2.indexOf('groupQrcode') > -1) {//邀请入群
+            if (url2.indexOf('applyEntry') > -1) {//邀请入群
                 data.title = shartData.title;
             } else if (url2.indexOf('cardDetail') > -1){//打卡详情
                 data.title = shartData.title + ',' + shartData.desc;
             }
-            data.imageUrl = shartData.imgUrl
+          data.imageUrl = imgsrc
         }
         return data
     }

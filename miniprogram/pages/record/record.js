@@ -37,6 +37,7 @@ Page({
     imgsrc:'/image/ks.png',
     tempFilePath: [],//音频链接组 本地
     ngPath: [],//服务器上链接
+    ngPathLength:0,
     date: {//秒表显示值or总时长
       minute: '0' + 0,
       second: '0' + 0
@@ -48,8 +49,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    getApp().setWatcher(this);
     this.setData({//刚进来拿网页传过来的参
-      formData: options
+      formData: options,
     })
     let that = this;
     record.onStop((res) => {//监听录音停止
@@ -61,16 +63,16 @@ Page({
       record.start(that.data.recordObj);
     })
     //微信语音来电情况
-    // record.onInterruptionBegin((res)=>{//监听录音中断
-    //   this.data.recordIsStop = true;
-    //   record.stop();
-    //   clearInterval(this.data.interval);
-    //   this.setData({
-    //     isClick: true,
-    //     recordTipTxt: '录音已暂停',
-    //     imgsrc: '/image/ks.png',
-    //   })
-    // })
+    record.onInterruptionBegin((res)=>{//监听录音中断
+      this.data.recordIsStop = true;
+      record.stop();
+      clearInterval(this.data.interval);
+      this.setData({
+        isClick: true,
+        recordTipTxt: '录音已暂停',
+        imgsrc: '/image/ks.png',
+      })
+    })
 
     innerAudioContext.onEnded((res) => {//监听播放停止
       if (that.data.hearIsPlay) {
@@ -135,6 +137,23 @@ Page({
       imgsrc: '/image/ks.png',
       hearTxt: '播放'
     })
+  },
+  watch:{
+    ngPathLength(newValue) {
+      let that=this;
+      let pathL = this.data.tempFilePath.length;
+      if (pathL == newValue) {
+        let arr=this.data.ngPath;
+        if (JSON.stringify(arr).indexOf('null')==-1){
+          // wx.showModal({
+          //   title: 'ng长度：' + newValue,
+          //   content: 'ng内容：'+JSON.stringify(arr),
+          // })
+          that.joinRecord()
+        }
+        
+      }
+    },
   },
   /**
    * 开始录音
@@ -388,7 +407,7 @@ Page({
     let data = that.data.formData;
     let pathArr = that.data.ngPath;
     wx.request({
-      url: 'https://pre-imis.biaodaa.com/upload/merge',
+      url: 'https://imis.biaodaa.com/upload/merge',
       header: {
         'X-TOKEN': data.token
       },
@@ -462,7 +481,7 @@ Page({
     // if (n != pathL) {//如果未上传过，则先上传再拼接
       for (var x = 0; x < pathL; x++) {
         wx.uploadFile({//停止则上传
-          url: 'https://pre-imis.biaodaa.com/upload/voice',
+          url: 'https://imis.biaodaa.com/upload/voice',
           name: 'file',
           filePath: that.data.tempFilePath[x],
           header: {
@@ -475,10 +494,11 @@ Page({
             let obj = resd.data;
             console.log(resd);
             obj = JSON.parse(obj);
-            that.data.ngPath[obj.data.index]=obj.data.audioPath;
-            if (x == that.data.ngPath.length){
-              that.joinRecord()
-            }  
+            that.data.ngPath[obj.data.index]=obj.data.audioPath;//防止上传顺序错乱
+            let ngl =that.data.ngPath.length;
+            that.setData({
+              ngPathLength: ngl
+            })
           }
         })
       }

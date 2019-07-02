@@ -5,7 +5,7 @@ Page({
      * 页面的初始数据
      */
     data: {
-        src:''
+        src:'' 
     },
 
     /**
@@ -13,7 +13,7 @@ Page({
      */
     
     onLoad: function (options) {
-        let appid = 'wx393124fdad606b1d'
+      let appid = 'wx26999a53385489f9'
         this.setData({
             src: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri='+options.uri+'&response_type=code&scope=snsapi_base&state=CD-IMIS#wechat_redirect'
         })

@@ -21,7 +21,7 @@ Page({
         console.log(options.id)
         // let id ='43bc1b5989ec45b2bdd8f7faf001e35d';
         wx.request({
-            url: 'https://pre-imis.biaodaa.com/group/detail/' + id,
+            url: 'https://imis.biaodaa.com/group/detail/' + id,
             success(res) {
                 console.log(res.data.data);
                 if (res.data.data.isConcern==0){
@@ -44,7 +44,7 @@ Page({
             return false
         }
         wx.request({
-            url: 'https://pre-imis.biaodaa.com/group/apply',
+            url: 'https://imis.biaodaa.com/group/apply',
             data:{
                 groId: that.data.id
             },
