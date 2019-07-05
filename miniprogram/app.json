@@ -1,10 +1,9 @@
 {
   "pages": [
-        "pages/index/index",
-        "pages/record/record",
-        "pages/cardDetail/cardDetail",
-        "pages/follow/follow"
-        
+    "pages/index/index",
+    "pages/record/record",
+    "pages/cardDetail/cardDetail",
+    "pages/follow/follow"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
@@ -12,5 +11,6 @@
     "navigationBarBackgroundColor": "#F6F6F6",
     "navigationBarTitleText": "定课成就美好人生",
     "navigationBarTextStyle": "black"
-  }
+  },
+  "sitemapLocation": "sitemap.json"
 }

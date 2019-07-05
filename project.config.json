@@ -9,9 +9,11 @@
 		"newFeature": true,
 		"autoAudits": true
 	},
-	"appid": "wxe464326e3b70251a",
+	"appid": "wxcf8e3f1bfd267a3e",
 	"projectname": "cd-dk-xcx",
-	"libVersion": "2.6.0",
+	"libVersion": "2.7.3",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
 	"condition": {
 		"search": {
 			"current": -1,

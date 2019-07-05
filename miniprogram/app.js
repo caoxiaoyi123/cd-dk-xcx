@@ -1,5 +1,9 @@
 //app.js
 App({
+  data: {
+    url: 'https://pre-imis.biaodaa.com',
+    appid: 'wx393124fdad606b1d',
+  },
   onLaunch: function () {
     
     if (!wx.cloud) {
