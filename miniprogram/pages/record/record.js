@@ -13,7 +13,6 @@ if (wx.setInnerAudioOption) {
 }
 
 Page({
-
   /**
    * 页面的初始数据
    */
@@ -43,20 +42,21 @@ Page({
       minute: '0' + 0,
       second: '0' + 0
     },
-    formData: ''
+    formData: '',
+    authorize: false,
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function(options) {
+    console.info(options)
     getApp().setWatcher(this);
     this.setData({ //刚进来拿网页传过来的参
       formData: options,
     })
     let that = this;
     record.onStop((res) => { //监听录音停止
-    console.info(res)
       that.data.tempFilePath.push(res.tempFilePath);
       if (that.data.recordIsStop) {
         return false;
@@ -74,6 +74,9 @@ Page({
         recordTipTxt: '录音已暂停',
         imgsrc: '/image/ks.png',
       })
+    })
+    innerAudioContext.onEnded((res) => { //监听播放停止
+      that.init();
     })
   },
 
@@ -131,6 +134,25 @@ Page({
         }
       }
     },
+  },
+  init() {
+    if (this.data.hearIsPlay) {
+      clearInterval(this.data.interval);
+      this.setData({
+        imgsrc: '/image/ks.png',
+        hearTxt: '播放',
+        hearIsPlay: false,
+        hearNowTime: { //当前播放时间
+          minute: '0' + 0,
+          second: '0' + 0
+        },
+        hearSlierWidth: 0, //进度条百分比
+        num: 0,
+      })
+      return false;
+    }
+    this.data.num++;
+    // this.autoPlay();
   },
   /**
    * 开始录音
@@ -190,10 +212,13 @@ Page({
     let s = that.data.date.second,
       m = that.data.date.minute;
     if (second === s && minute === m) {
+      console.log("计时完成");
+      clearInterval(this.data.interval);
       that.setData({
         hearIsPlay: true
       })
       innerAudioContext.stop();
+      that.init();
       return false
     }
     second++;
@@ -220,6 +245,31 @@ Page({
     })
   },
   /**
+   * 授权之后调用的方法
+   *
+   */
+  beginStart() {
+    if (!this.data.isClick) {
+      //暂停
+      this.data.recordIsStop = true;
+      record.stop();
+      clearInterval(this.data.interval);
+      this.setData({
+        isClick: true,
+        recordTipTxt: '录音已暂停',
+        imgsrc: '/image/ks.png',
+      })
+    } else {
+      //开始继续
+      this.start();
+      this.setData({
+        isClick: false,
+        recordTipTxt: '正在录音',
+        imgsrc: '/image/zt.png',
+      })
+    }
+  },
+  /** 
    * 点击事件
    */
   clickTap() {
@@ -228,26 +278,7 @@ Page({
     wx.authorize({
       scope: 'scope.record',
       success() {
-        // //第一次成功授权后 状态切换为2
-        if (!that.data.isClick) {
-          //暂停
-          that.data.recordIsStop = true;
-          record.stop();
-          clearInterval(that.data.interval);
-          that.setData({
-            isClick: true,
-            recordTipTxt: '录音已暂停',
-            imgsrc: '/image/ks.png',
-          })
-        } else {
-          //开始继续
-          that.start();
-          that.setData({
-            isClick: false,
-            recordTipTxt: '正在录音',
-            imgsrc: '/image/zt.png',
-          })
-        }
+        that.beginStart();
       },
       fail() {
         console.log("第一次录音授权失败");
@@ -277,7 +308,12 @@ Page({
                   } else {
                     //第二次才成功授权
                     console.log("设置录音授权成功");
-                    record.start();
+                    that.setData({
+                      authorize: true,
+                    });
+                    if (!that.data.isClick && that.data.authorize){
+                      that.beginStart();
+                    }
                   }
                 },
                 fail: function() {
@@ -299,6 +335,7 @@ Page({
    * 自动播放
    */
   autoPlay() { //上个音频结束后自动播放下个音频
+  console.info('自动播放')
     let that = this;
     let n = that.data.num;
     if (n == that.data.tempFilePath.length) {
@@ -331,25 +368,6 @@ Page({
     })
     innerAudioContext.src = that.data.tempFilePath[0];
     innerAudioContext.play();
-    innerAudioContext.onEnded((res) => { //监听播放停止
-      if (that.data.hearIsPlay) {
-        clearInterval(that.data.interval);
-        that.setData({
-          imgsrc: '/image/ks.png',
-          hearTxt: '播放',
-          hearIsPlay: false,
-          hearNowTime: { //当前播放时间
-            minute: '0' + 0,
-            second: '0' + 0
-          },
-          hearSlierWidth: 0, //进度条百分比
-          num: 0,
-        })
-        return false;
-      }
-      that.data.num++;
-      that.autoPlay();
-    })
   },
   pause() {
     clearInterval(this.data.interval);
@@ -434,7 +452,6 @@ Page({
             },
           })
         } else {
-
         }
       }
     })
@@ -446,6 +463,7 @@ Page({
     let that = this;
     let data = that.data.formData;
     let pathArr = that.data.ngPath;
+    let recordTime = parseInt(that.data.date.minute) * 60 + parseInt(that.data.date.second);
     wx.request({
       url: `${url}/upload/merge`,
       header: {
@@ -484,7 +502,7 @@ Page({
           },
         })
         wx.reLaunch({
-          url: '/pages/index/index?type=' + data.type + '&id=' + data.id + '&uri=' + data.uri + '&audioPath=' + path
+          url: `/pages/index/index?type=${data.type}&id=${data.id}&uri=${data.uri}&audioPath=${path}&recordTime=${recordTime}`
         })
       },
     })
@@ -557,7 +575,7 @@ Page({
     record.stop();
     clearInterval(this.data.interval);
     this.data.recordIsStop = true;
-    // record.pause();
+    record.pause();
     this.setData({
       isClick: true,
       tipTxt: '录音已暂停',
@@ -566,7 +584,6 @@ Page({
       interval: '', //记录定时器id
       num: 0,
     })
-
     // let path=this.data.tempFilePath,
     // date=this.data.date;
     // path=JSON.stringify(path);

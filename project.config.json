@@ -31,7 +31,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 1,
+			"current": 2,
 			"list": [
 				{
 					"id": -1,
@@ -45,6 +45,12 @@
 					"pathName": "pages/follow/follow",
 					"query": "",
 					"scene": "1011"
+				},
+				{
+					"id": -1,
+					"name": "录音重构",
+					"pathName": "pages/record/record",
+					"scene": null
 				}
 			]
 		}

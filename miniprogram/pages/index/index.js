@@ -1,5 +1,5 @@
 // pages/index/index.js
-let appid = getApp().data.appid;
+let { appid, url } = getApp().data;
 Page({
 
   /**
@@ -22,13 +22,14 @@ Page({
    */
 
   onLoad: function(options) {
+    console.info(options);
+    var curPageArr = getCurrentPages(); 
     if (JSON.stringify(options) == '{}') { //正常方式进入
       this.setData({
-        src: 'https://open.weixin.qq.com/connect/oauth2/authorize?appid=' + appid + '&redirect_uri=https%3a%2f%2fpre-imis.biaodaa.com%2findex.html&response_type=code&scope=snsapi_base&state=CD-IMIS#wechat_redirect'
+        src: `https://open.weixin.qq.com/connect/oauth2/authorize?appid=${appid}&redirect_uri=${encodeURIComponent(url)}/index.html&response_type=code&scope=snsapi_base&state=CD-IMIS#wechat_redirect`
       })
     } else { //录音完进入
       let url = decodeURIComponent(options.uri) + '?type=' + options.type + '&id=' + options.id + '&path=' + options.audioPath
-      console.info(url);
       this.setData({
         src: url
       })
@@ -53,14 +54,12 @@ Page({
    * 生命周期函数--监听页面隐藏
    */
   onHide: function() {
-
   },
-
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload: function() {
-
+  
   },
 
   /**

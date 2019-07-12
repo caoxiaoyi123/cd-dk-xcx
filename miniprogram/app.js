@@ -1,11 +1,12 @@
 //app.js
+// const url = 'https://imis.biaodaa.com'; //正式环境；
+const url = 'https://pre-imis.biaodaa.com'; //测试环境;
 App({
   data: {
-    url: 'https://pre-imis.biaodaa.com',
-    appid: 'wx393124fdad606b1d',
+    url: url, 
+    appid: url == 'https://imis.biaodaa.com' ? 'wx26999a53385489f9':'wx393124fdad606b1d', //正式环境，测试环境；
   },
   onLaunch: function () {
-    
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力')
     } else {
@@ -13,7 +14,6 @@ App({
         traceUser: true,
       })
     }
-
     this.globalData = {}
   },
   /**
